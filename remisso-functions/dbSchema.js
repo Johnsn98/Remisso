@@ -1,13 +1,16 @@
 let db = {
 	posts: [
-		(name: 'Thomas'),
-		(userHandle: 'Nathan'),
-		(bodyAccount: 'Account of what happened'),
-		(bodyResolution: 'the user would like this to happen'),
+			"name": "Nathan",
+			"bodyAccount": "He sold me",
+			"bodyResolution": "Money back please",
+			"facebookLink": "facebook.com/pinkman",
+			"instagramLink": "instagram.com/pinkman",
+			"otherLink": "pinkman.com",
+			"imgURL": "",
+			"location": "",
+			"lat": 50,
+			"lng": 50
 		(createdAt: 'date'),
-		(facebookLink: 'req.body.facebookLink'),
-		(instagramLink: 'req.body.instagramLink'),
-		(otherLink: 'req.body.otherLink'),
 		(likeCount: 4),
 		(commentCount: 2)
 	],
@@ -41,7 +44,9 @@ const userDetails = {
 		createdAt: '2019-03-15T10:59:52.798Z',
 		imageUrl: 'image/dsfsdkfghskdfgs/dgfdhfgdh',
 		bio: 'Hello, my name is user, nice to meet you',
-		location: 'Lonodn, UK'
+		location: 'Lonodn, UK',
+		publicEmail: 'guihgr@rmail.com',
+		whatsapp: '35839675432890677534'
 	},
 	likes: [
 		{

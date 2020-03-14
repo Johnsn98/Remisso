@@ -8,7 +8,6 @@ const {
 	getAllPosts,
 	findPost,
 	postOnePost,
-	postImage,
 	getPost,
 	commentOnPost,
 	likePost,
@@ -23,6 +22,7 @@ const {
 	addUserDetails,
 	getAuthenticatedUser,
 	getUserDetails,
+	postImage,
 	markNotificationsRead
 } = require('./handlers/users');
 
@@ -37,7 +37,6 @@ app.get('/post/:postId/unlike', FBAuth, unLikePost);
 app.post('/post/:postId/comment', FBAuth, commentOnPost);
 
 app.get('/findpost/:postName', findPost);
-app.post('/post/image', FBAuth, postImage);
 
 // users routes
 app.post('/signup', signup);
@@ -47,6 +46,7 @@ app.post('/user', FBAuth, addUserDetails);
 app.get('/user', FBAuth, getAuthenticatedUser);
 app.get('/user/:handle', getUserDetails);
 app.post('/notifications', FBAuth, markNotificationsRead);
+app.post('/post/image', FBAuth, postImage);
 
 exports.api = functions.https.onRequest(app);
 
@@ -71,7 +71,13 @@ exports.createNotificationOnLike = functions
 				}
 				return;
 			})
-			.catch((err) => console.error({ err }));
+			.then(() => {
+				return;
+			})
+			.catch((err) => {
+				console.error(err);
+				return;
+			});
 	});
 
 exports.createNotificationOnComment = functions
@@ -94,8 +100,24 @@ exports.createNotificationOnComment = functions
 				}
 				return;
 			})
+			.then(() => {
+				return;
+			})
 			.catch((err) => {
-				console.error({ err });
+				console.error(err);
+				return;
+			});
+	});
+
+exports.deleteNotificationOnUnLike = functions
+	.region('us-central1')
+	.firestore.document('likes/{id}')
+	.onDelete((snapshot) => {
+		return db
+			.doc(`/notifications/${snapshot.id}`)
+			.delete()
+			.catch((err) => {
+				console.error(err);
 				return;
 			});
 	});
@@ -158,4 +180,27 @@ exports.onPostDeleted = functions
 				return batch.commit();
 			})
 			.catch((err) => console.error(err));
+	});
+
+exports.onUserImageChange = functions
+	.region('us-central1')
+	.firestore.document('/users/{userId}')
+	.onUpdate((change) => {
+		console.log(change.before.data());
+		console.log(change.after.data());
+		if (change.before.data().imageUrl !== change.after.data().imageUrl) {
+			console.log('image has changed');
+			const batch = db.batch();
+			return db
+				.collection('Posts')
+				.where('userHandle', '==', change.before.data().handle)
+				.get()
+				.then((data) => {
+					data.forEach((doc) => {
+						const post = db.doc(`/posts/${doc.id}`);
+						batch.update(post, { userImage: change.after.data().imageUrl });
+					});
+					return batch.commit();
+				});
+		} else return true;
 	});

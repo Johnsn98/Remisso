@@ -49,5 +49,8 @@ exports.reduceUserDetails = (data) => {
 	if (!isEmpty(data.bio.trim())) userDetails.bio = data.bio;
 	if (!isEmpty(data.location.trim())) userDetails.location = data.location;
 	if (!isEmpty(data.whatsapp.trim())) userDetails.whatsapp = data.whatsapp;
+	if (!isEmpty(data.publicEmail.trim()))
+		userDetails.publicEmail = data.publicEmail;
+
 	return userDetails;
 };

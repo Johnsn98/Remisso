@@ -1,4 +1,4 @@
-const { db, admin } = require('../utilities/admin');
+const { db } = require('../utilities/admin');
 
 exports.getAllPosts = (req, res) => {
 	db.collection('Posts')
@@ -9,9 +9,19 @@ exports.getAllPosts = (req, res) => {
 			data.forEach((doc) => {
 				posts.push({
 					postId: doc.id,
-					body: doc.data().body,
+					bodyAccount: doc.data().bodyAccount,
 					userHandle: doc.data().userHandle,
-					createdAt: doc.data().createdAt
+					userImage: doc.data().userImage,
+					createdAt: doc.data().createdAt,
+					name: doc.data().name,
+					bodyResolution: doc.data().bodyResolution,
+					facebookLink: doc.data().facebookLink,
+					instagramLink: doc.data().instagramLink,
+					otherLink: doc.data().otherLink,
+					imgURL: doc.data().imgURL,
+					location: doc.data().location,
+					commentCount: doc.data().commentCount,
+					likeCount: doc.data().likeCount
 				});
 			});
 			return res.json(posts);
@@ -20,8 +30,25 @@ exports.getAllPosts = (req, res) => {
 };
 
 exports.postOnePost = (req, res) => {
-	if (req.body.body.trim() === '') {
-		return res.status(400).json({ body: 'Body must not be empty' });
+	let image;
+	if (req.body.name === '') {
+		return res.status(400).json({ body: 'Name must not be empty' });
+	}
+	if (req.body.bodyAccount === '') {
+		return res
+			.status(400)
+			.json({ body: 'Account of what happened is required' });
+	}
+	if (req.body.bodyResolution === '') {
+		return res
+			.status(400)
+			.json({ body: 'Resolution is required for every post' });
+	}
+	if (req.body.imgURL === null || req.body.imgURL === '') {
+		image =
+			'https://firebasestorage.googleapis.com/v0/b/remisso-website.appspot.com/o/logo.jpg?alt=media&token=c5136266-c8a2-4516-8c1d-96d5ec9e22ae';
+	} else {
+		image = req.body.imgURL;
 	}
 
 	newPost = {
@@ -33,7 +60,13 @@ exports.postOnePost = (req, res) => {
 		instagramLink: req.body.instagramLink,
 		otherLink: req.body.otherLink,
 		userHandle: req.user.handle,
-		imgURL: 'default'
+		imgURL: image,
+		location: req.body.location,
+		lat: req.body.lat,
+		lng: req.body.lng,
+		latlng: [req.body.lat, req.body.lng],
+		commentCount: 0,
+		likeCount: 0
 	};
 
 	db.collection('Posts')
@@ -68,65 +101,6 @@ exports.findPost = (req, res) => {
 			return res.json(searchResults);
 		})
 		.catch((err) => console.error(err));
-};
-
-//post image upload
-exports.postImage = (req, res) => {
-	const BusBoy = require('busboy');
-	const path = require('path');
-	const os = require('os');
-	const fs = require('fs');
-
-	const busboy = new BusBoy({ headers: req.headers });
-
-	let imageToBeUploaded = {};
-	let imageFileName;
-
-	busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-		console.log(fieldname, file, filename, encoding, mimetype);
-
-		const fileSize = req.headers['content-length'] / 1024;
-		console.log('File size: ' + `${fileSize}` + 'KB');
-		if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
-			return res.status(400).json({ error: 'Wrong file type submitted' });
-		}
-		if (fileSize > 600) {
-			return res.status(400).json({ error: 'Max file size is 500KB' });
-		}
-
-		// my.image.png => ['my', 'image', 'png']
-		const imageExtension = filename.split('.')[filename.split('.').length - 1];
-		// 32756238461724837.png
-		imageFileName = `${Math.round(
-			Math.random() * 1000000000000
-		).toString()}.${imageExtension}`;
-		const filepath = path.join(os.tmpdir(), imageFileName);
-		imageToBeUploaded = { filepath, mimetype };
-		file.pipe(fs.createWriteStream(filepath));
-	});
-	busboy.on('finish', () => {
-		admin
-			.storage()
-			.bucket()
-			.upload(imageToBeUploaded.filepath, {
-				resumable: false,
-				metadata: {
-					metadata: {
-						contentType: imageToBeUploaded.mimetype
-					}
-				}
-			})
-			.then(() => {
-				return res.json({
-					message: 'image uploaded successfully'
-				});
-			})
-			.catch((err) => {
-				console.error(err);
-				return res.status(500).json({ error: 'something went wrong,' });
-			});
-	});
-	busboy.end(req.rawBody);
 };
 
 //fetch post

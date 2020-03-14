@@ -106,7 +106,6 @@ exports.uploadImage = (req, res) => {
 	let imageFileName;
 
 	busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-		console.log(fieldname, file, filename, encoding, mimetype);
 		const fileSize = req.headers['content-length'] / 1024;
 		console.log('File size: ' + `${fileSize}` + 'KB');
 		if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
@@ -156,9 +155,81 @@ exports.uploadImage = (req, res) => {
 	busboy.end(req.rawBody);
 };
 
+//post image upload
+exports.postImage = (req, res) => {
+	const BusBoy = require('busboy');
+	const path = require('path');
+	const os = require('os');
+	const fs = require('fs');
+
+	const busboy = new BusBoy({ headers: req.headers });
+
+	let imageToBeUploaded = {};
+	let imageFileName;
+	busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+		const fileSize = req.headers['content-length'] / 1024;
+		console.log('File size: ' + `${fileSize}` + 'KB');
+
+		if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
+			return res.status(400).json({ error: 'Wrong file type submitted' });
+		}
+		if (fileSize > 600) {
+			return res.status(400).json({ error: 'Max file size is 500KB' });
+		}
+
+		// my.image.png => ['my', 'image', 'png']
+		const imageExtension = filename.split('.')[filename.split('.').length - 1];
+		// 32756238461724837.png
+		imageFileName = `${Math.round(
+			Math.random() * 1000000000000
+		).toString()}.${imageExtension}`;
+		const filepath = path.join(os.tmpdir(), imageFileName);
+		imageToBeUploaded = { filepath, mimetype };
+		file.pipe(fs.createWriteStream(filepath));
+	});
+	busboy.on('finish', () => {
+		admin
+			.storage()
+			.bucket()
+			.upload(imageToBeUploaded.filepath, {
+				resumable: false,
+				metadata: {
+					metadata: {
+						contentType: imageToBeUploaded.mimetype
+					}
+				}
+			})
+			.then(() => {
+				const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+
+				return res.json({
+					message: 'image uploaded successfully',
+					imageUrl: imageUrl
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(500).json({ error: 'something went wrong' + postId });
+			});
+	});
+	busboy.end(req.rawBody);
+};
+
 // Add user details
 exports.addUserDetails = (req, res) => {
 	let userDetails = reduceUserDetails(req.body);
+
+	// email validator
+	const isEmail = (email) => {
+		/* eslint-disable-next-line */
+		const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if (email.match(regEx)) return true;
+		else return false;
+	};
+
+	if (!isEmail(userDetails.publicEmail)) {
+		return res.json({ message: 'Email not valid' });
+	}
 
 	db.doc(`/users/${req.user.handle}`)
 		.update(userDetails)
@@ -242,7 +313,7 @@ exports.getAuthenticatedUser = (req, res) => {
 					recipient: doc.data().recipient,
 					sender: doc.data().sender,
 					createdAt: doc.data().createdAt,
-					screamId: doc.data().screamId,
+					screamId: doc.data().postId,
 					type: doc.data().type,
 					read: doc.data().read,
 					notificationId: doc.id
