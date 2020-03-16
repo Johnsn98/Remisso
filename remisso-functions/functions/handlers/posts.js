@@ -60,6 +60,7 @@ exports.postOnePost = (req, res) => {
 		instagramLink: req.body.instagramLink,
 		otherLink: req.body.otherLink,
 		userHandle: req.user.handle,
+		userImage: req.user.imageUrl,
 		imgURL: image,
 		location: req.body.location,
 		lat: req.body.lat,
