@@ -16,7 +16,7 @@ const MyBottomNavigationAction = withStyles({
 		fontFamily: 'Helvetica Neue',
 		minWidth: 50,
 		fontWeight: 100,
-		backgroundColor: '#191A1A',
+		background: '#191A1A',
 		'&.Mui-selected': {
 			color: 'white',
 			fontWeight: 400
@@ -28,7 +28,7 @@ export default function Navbar() {
 	const [value, setValue] = React.useState(0);
 	return (
 		<div>
-			<AppBar>
+			<AppBar style={{ background: '#191A1A' }}>
 				<Toolbar className='nav-container'>
 					<BottomNavigation
 						value={value}

@@ -1,14 +1,14 @@
 export default {
 	palette: {
 		primary: {
-			light: '#33c9dc',
-			main: '#191A1A',
+			light: '#b22a00', //orange
+			main: '#546E79',
 			dark: '#008394',
 			contrastText: '#fff'
 		},
 		secondary: {
 			light: '#ff6333',
-			main: '#ff3d00',
+			main: '#b22a00',
 			dark: '#b22a00',
 			contrastText: '#fff'
 		}
@@ -93,5 +93,8 @@ export default {
 		'& a': {
 			margin: '20px 10px'
 		}
+	},
+	content: {
+		color: '#546E79'
 	}
 };
