@@ -7,8 +7,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 
 import withStyles from '@material-ui/core/styles/withStyles';
+import theme from './theme';
 
-const styles = (theme) => ({
+const styles = () => ({
 	...theme,
 	card: {
 		display: 'flex',

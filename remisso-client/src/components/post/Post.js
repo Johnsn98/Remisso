@@ -8,19 +8,17 @@ import DeletePost from './DeletePost';
 import PostDialog from './PostDialog';
 import LikeButton from './LikeButton';
 import Grid from '@material-ui/core/Grid';
+import PostPost from './PostPost';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import PropTypes from 'prop-types';
 
 // MUI Stuff
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 
 // Icons
 import ChatIcon from '@material-ui/icons/Chat';
@@ -29,7 +27,7 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import LinkIcon from '@material-ui/icons/Link';
 
 // Redux
-//import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 
 const styles = {
 	card: {
@@ -95,6 +93,10 @@ class Post extends Component {
 				facebookLink,
 				instagramLink,
 				otherLink
+			},
+			user: {
+				authenticated,
+				credentials: { handle }
 			}
 		} = this.props;
 
@@ -137,7 +139,10 @@ class Post extends Component {
 			return <div></div>;
 		}
 
-		const deleteButton = <DeletePost postId={postId} />;
+		const deleteButton =
+			authenticated && userHandle === handle ? (
+				<DeletePost postId={postId} />
+			) : null;
 
 		return (
 			<Card className={classes.card}>
@@ -155,7 +160,6 @@ class Post extends Component {
 								<Typography
 									variant='h1'
 									component={Link}
-									to={`/users/${userHandle}`}
 									color='primary'
 									className={classes.name}>
 									{name}
@@ -198,4 +202,15 @@ class Post extends Component {
 	}
 }
 
-export default withStyles(styles)(Post);
+Post.propTypes = {
+	user: PropTypes.object.isRequired,
+	post: PropTypes.object.isRequired,
+	classes: PropTypes.object.isRequired,
+	openDialog: PropTypes.bool
+};
+
+const mapStateToProps = (state) => ({
+	user: state.user
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(Post));

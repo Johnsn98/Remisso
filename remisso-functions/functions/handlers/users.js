@@ -46,7 +46,7 @@ exports.signup = (req, res) => {
 				email: newUser.email,
 				createdAt: new Date().toISOString(),
 				userId: userId,
-				imageURL:
+				imageUrl:
 					'https://firebasestorage.googleapis.com/v0/b/remisso-website.appspot.com/o/logo.jpg?alt=media&token=c5136266-c8a2-4516-8c1d-96d5ec9e22ae'
 			};
 			return db.doc(`/users/${newUser.handle}`).set(userCredentials);

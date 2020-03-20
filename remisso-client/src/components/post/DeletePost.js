@@ -10,8 +10,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-//import { connect } from 'react-redux';
-//import { deletePost } from '../../redux/actions/dataActions';
+import { connect } from 'react-redux';
+import { deletePost } from '../../redux/actions/dataActions';
 
 const styles = {
 	deleteButton: {
@@ -72,4 +72,4 @@ DeletePost.propTypes = {
 	postId: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(DeletePost);
+export default connect(null, { deletePost })(withStyles(styles)(DeletePost));

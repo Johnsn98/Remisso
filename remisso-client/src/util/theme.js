@@ -50,7 +50,9 @@ export default {
 		marginBottom: 20
 	},
 	paper: {
-		padding: 20
+		padding: 20,
+		margin: '0px 20px 20px 20px',
+		zIndex: 99
 	},
 	profile: {
 		'& .image-wrapper': {
@@ -61,6 +63,12 @@ export default {
 				top: '80%',
 				left: '70%'
 			}
+		},
+		'& .profile-image2': {
+			width: 200,
+			height: 200,
+			objectFit: 'cover',
+			maxWidth: '100%'
 		},
 		'& .profile-image': {
 			width: 200,
@@ -75,7 +83,7 @@ export default {
 				verticalAlign: 'middle'
 			},
 			'& a': {
-				color: '#00bcd4'
+				color: '#546E79'
 			}
 		},
 		'& hr': {
@@ -96,5 +104,11 @@ export default {
 	},
 	content: {
 		color: '#546E79'
+	},
+	'profile-image2': {
+		width: 200,
+		height: 200,
+		objectFit: 'cover',
+		maxWidth: '100%'
 	}
 };

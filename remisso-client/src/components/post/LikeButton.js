@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 // REdux
-//import { connect } from 'react-redux';
-//import { likePost, unlikePost } from '../../redux/actions/dataActions';
+import { connect } from 'react-redux';
+import { likePost, unlikePost } from '../../redux/actions/dataActions';
 
 export class LikeButton extends Component {
-	likesPost = () => {
+	likedPost = () => {
 		if (
 			this.props.user.likes &&
 			this.props.user.likes.find((like) => like.postId === this.props.postId)
@@ -25,17 +25,9 @@ export class LikeButton extends Component {
 		this.props.unlikePost(this.props.postId);
 	};
 	render() {
-		//const { authenticated } = this.props.user;
+		const { authenticated } = this.props.user;
 
-		const likeButton = (
-			<Link to='/login'>
-				<MyButton tip='Like'>
-					<FavoriteBorder color='secondary' />
-				</MyButton>
-			</Link>
-		);
-
-		/*= !authenticated ? (
+		const likeButton = !authenticated ? (
 			<Link to='/login'>
 				<MyButton tip='Like'>
 					<FavoriteBorder color='primary' />
@@ -48,9 +40,8 @@ export class LikeButton extends Component {
 		) : (
 			<MyButton tip='Like' onClick={this.likePost}>
 				<FavoriteBorder color='primary' />
-            </MyButton>
-            
-		);*/
+			</MyButton>
+		);
 		return likeButton;
 	}
 }
@@ -66,11 +57,9 @@ const mapStateToProps = (state) => ({
 	user: state.user
 });
 
-/*
 const mapActionsToProps = {
 	likePost,
 	unlikePost
 };
-*/
 
-export default /*connect(mapStateToProps, mapActionsToProps)*/ LikeButton;
+export default connect(mapStateToProps, mapActionsToProps)(LikeButton);

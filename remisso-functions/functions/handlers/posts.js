@@ -60,7 +60,6 @@ exports.postOnePost = (req, res) => {
 		instagramLink: req.body.instagramLink,
 		otherLink: req.body.otherLink,
 		userHandle: req.user.handle,
-		userImage: req.user.imageUrl,
 		imgURL: image,
 		location: req.body.location,
 		lat: req.body.lat,
@@ -73,12 +72,12 @@ exports.postOnePost = (req, res) => {
 	db.collection('Posts')
 		.add(newPost)
 		.then((doc) => {
-			return res.json({
-				Message: `${req.body.name} added to Remisso`
-			});
+			const resPost = newPost;
+			resPost.postId = doc.id;
+			return res.json(resPost);
 		})
 		.catch((err) => {
-			res.status(500).json({ error: 'failure code blue' });
+			res.status(500).json({ error: 'something went wrong' });
 			console.error(err);
 		});
 };

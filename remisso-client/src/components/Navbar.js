@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
+
 import Link from 'react-router-dom/Link';
 import '../App.css';
+import PropTypes from 'prop-types';
+
+//redux
+import { connect } from 'react-redux';
+import { logoutUser } from '../redux/actions/userActions';
 
 //MUI
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
+
+import Notifications from './Notifications';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -24,39 +32,111 @@ const MyBottomNavigationAction = withStyles({
 	}
 })(BottomNavigationAction);
 
-export default function Navbar() {
-	const [value, setValue] = React.useState(0);
-	return (
-		<div>
-			<AppBar style={{ background: '#191A1A' }}>
-				<Toolbar className='nav-container'>
-					<BottomNavigation
-						value={value}
-						onChange={(event, newValue) => {
-							setValue(newValue);
-						}}
-						showLabels>
-						<MyBottomNavigationAction label='Home' component={Link} to='/' />
+class Navbar extends Component {
+	state = {
+		value: 'home'
+	};
 
-						<MyBottomNavigationAction
-							label='Posts'
-							component={Link}
-							to='/posts'
-							size='large'
-						/>
-						<MyBottomNavigationAction
-							label='Search'
-							component={Link}
-							to='/search'
-						/>
-						<MyBottomNavigationAction
-							label='Signup'
-							component={Link}
-							to='/signup'
-						/>
-					</BottomNavigation>
-				</Toolbar>
-			</AppBar>
-		</div>
-	);
+	handleChange = (event, value) => {
+		this.setState({ value });
+	};
+
+	handleLogout = () => {
+		this.props.logoutUser();
+	};
+
+	render() {
+		const { authenticated } = this.props;
+		const { value } = this.state;
+		return (
+			<div>
+				<AppBar style={{ background: '#191A1A' }}>
+					<Toolbar className='nav-container'>
+						{authenticated ? (
+							<Fragment>
+								<BottomNavigation
+									showLabels
+									value={value}
+									onChange={this.handleChange}>
+									<MyBottomNavigationAction
+										label='Home'
+										component={Link}
+										to='/'
+										value='home'
+									/>
+									<MyBottomNavigationAction
+										label='Posts'
+										component={Link}
+										to='/posts'
+										size='large'
+										value='posts'
+									/>
+									<MyBottomNavigationAction
+										label='Search'
+										component={Link}
+										to='/search'
+										value='search'
+									/>
+									<MyBottomNavigationAction
+										label='Logout'
+										component={Link}
+										onClick={this.handleLogout}
+										value='logout'
+									/>
+									<Notifications />
+								</BottomNavigation>
+							</Fragment>
+						) : (
+							<Fragment>
+								<BottomNavigation
+									showLabels
+									value={value}
+									onChange={this.handleChange}>
+									<MyBottomNavigationAction
+										label='Home'
+										component={Link}
+										to='/'
+										value='home'
+									/>
+
+									<MyBottomNavigationAction
+										label='Posts'
+										component={Link}
+										to='/posts'
+										size='large'
+										value='posts'
+									/>
+									<MyBottomNavigationAction
+										label='Search'
+										component={Link}
+										to='/search'
+										value='search'
+									/>
+									<MyBottomNavigationAction
+										label='Signup'
+										component={Link}
+										to='/Signup'
+										value='signup'
+									/>
+								</BottomNavigation>
+							</Fragment>
+						)}
+					</Toolbar>
+				</AppBar>
+			</div>
+		);
+	}
 }
+
+Navbar.propTypes = {
+	authenticated: PropTypes.bool.isRequired,
+	logoutUser: PropTypes.func.isRequired
+};
+
+const mapStateToProps = (state) => ({
+	authenticated: state.user.authenticated
+});
+
+const mapActionsToProps = { logoutUser };
+
+export default connect(mapStateToProps, mapActionsToProps)(Navbar);
