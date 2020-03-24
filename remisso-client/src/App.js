@@ -13,9 +13,10 @@ import posts from './pages/posts';
 import login from './pages/login';
 import signup from './pages/signup';
 import createpost from './pages/createPost';
+import user from './pages/user';
 
 // Components
-import Navbar from './components/Navbar';
+import Navbar from './components/layout/Navbar';
 import themeObject from './util/theme';
 import jwtDecode from 'jwt-decode';
 import AuthRoute from './util/AuthRoute';
@@ -57,9 +58,16 @@ class App extends Component {
 								<Switch>
 									<Route exact path='/' component={home} />
 									<Route exact path='/posts' component={posts} />
+									<Route exact path='/posts/createpost' component={posts} />
+									<Route exact path='/users/:handle' component={user} />
 									<AuthRoute exact path='/login' component={login} />
 									<AuthRoute exact path='/signup' component={signup} />
 									<Route exact path='/createpost' component={createpost} />
+									<Route
+										exact
+										path='/users/:handle/post/:postId'
+										component={user}
+									/>
 								</Switch>
 							</div>
 						</Router>

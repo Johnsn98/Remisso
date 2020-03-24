@@ -12,6 +12,8 @@ import {
 	STOP_LOADING_UI,
 	SUBMIT_COMMENT
 } from '../types';
+import { withRouter } from 'react-router-dom';
+
 import axios from 'axios';
 
 // Get all POSTs

@@ -5,7 +5,8 @@ import {
 	LOADING_USER,
 	LIKE_POST,
 	UNLIKE_POST,
-	MARK_NOTIFICATIONS_READ
+	MARK_NOTIFICATIONS_READ,
+	SET_URL
 } from '../types';
 
 const initialState = {
@@ -35,6 +36,11 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loading: true
+			};
+		case SET_URL:
+			return {
+				...state,
+				URL: action.payload.imageUrl
 			};
 		case LIKE_POST:
 			return {

@@ -6,13 +6,11 @@ import dayjs from 'dayjs';
 import EditDetails from './EditDetails';
 import MyButton from '../../util/MyButton';
 import ProfileSkeleton from '../../util/ProfileSkeleton';
-import PostPost from '../post/PostPost';
 
 // MUI stuff
 import Button from '@material-ui/core/Button';
 import MuiLink from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
-import AddIcon from '@material-ui/icons/Add';
 
 // Icons
 import LocationOn from '@material-ui/icons/LocationOn';
@@ -69,6 +67,9 @@ class Profile extends Component {
 	handleLogout = () => {
 		this.props.logoutUser();
 	};
+	componentDidMount() {
+		console.log(this.props);
+	}
 
 	render() {
 		const {
@@ -161,9 +162,6 @@ class Profile extends Component {
 							<EditDetails />
 						</div>
 					</Paper>
-					<div className={classes.padding}>
-						<PostPost />
-					</div>
 				</Fragment>
 			) : (
 				<Fragment>
@@ -197,13 +195,6 @@ class Profile extends Component {
 							</div>
 						</div>
 					</Paper>
-					<div className={classes.padding}>
-						<Link to='/login'>
-							<MyButton tip='Post an account of what happened'>
-								<AddIcon /> Create a new post
-							</MyButton>
-						</Link>
-					</div>
 				</Fragment>
 			)
 		) : (
@@ -215,7 +206,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	user: state.user
+	user: state.user,
+	history: state.history
 });
 
 const mapActionsToProps = { logoutUser, uploadImage };
@@ -224,7 +216,8 @@ Profile.propTypes = {
 	logoutUser: PropTypes.func.isRequired,
 	uploadImage: PropTypes.func.isRequired,
 	user: PropTypes.object.isRequired,
-	classes: PropTypes.object.isRequired
+	classes: PropTypes.object.isRequired,
+	history: PropTypes.object.isRequired
 };
 
 export default connect(

@@ -3,8 +3,9 @@ import MyButton from '../../util/MyButton';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // Icons
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Gavel';
+import FavoriteBorder from '@material-ui/icons/StarBorder';
+
 // REdux
 import { connect } from 'react-redux';
 import { likePost, unlikePost } from '../../redux/actions/dataActions';
@@ -34,11 +35,11 @@ export class LikeButton extends Component {
 				</MyButton>
 			</Link>
 		) : this.likedPost() ? (
-			<MyButton tip='Undo like' onClick={this.unlikePost}>
+			<MyButton tip='Undo approval' onClick={this.unlikePost}>
 				<FavoriteIcon color='primary' />
 			</MyButton>
 		) : (
-			<MyButton tip='Like' onClick={this.likePost}>
+			<MyButton tip='Approve this post' onClick={this.likePost}>
 				<FavoriteBorder color='primary' />
 			</MyButton>
 		);

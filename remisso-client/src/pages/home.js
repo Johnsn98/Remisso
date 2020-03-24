@@ -6,13 +6,13 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import theme from '../util/theme';
 import '../App.css';
 import PropTypes from 'prop-types';
-import Link from 'react-router-dom/Link';
 
 import image1 from '../images/image1.jpg';
 import image2 from '../images/image2.jpg';
 import image3 from '../images/image3.jpg';
 
 import { connect } from 'react-redux';
+import { getPosts } from '../redux/actions/dataActions';
 
 //Mui
 import Card from '@material-ui/core/Card';
@@ -32,7 +32,6 @@ const styles = () => ({
 	},
 	left: {
 		background: 'white',
-		color: 'black',
 		position: 'relative',
 		zIndex: 3,
 		marginBottom: 10,
@@ -71,25 +70,31 @@ const styles = () => ({
 });
 
 export class home extends Component {
+	componentDidMount() {
+		this.props.getPosts();
+	}
+
 	render() {
+		let Link = require('react-router-dom').Link;
 		const { classes } = this.props;
+
 		return (
 			<div>
 				{' '}
-				<div class='white'></div>
-				<Grid container spacing={16}>
-					<Grid item className={classes.left} item sm={6} xs={12}>
+				<div className='white'></div>
+				<Grid container>
+					<Grid item className={classes.left} sm={6} xs={12}>
 						Remisso is a public record of petty offenses and misdoings between
 						citizens in aim to resolve conflicts and improve C2C business
 						conduct as a whole and for everyone.
 					</Grid>
 
-					<Grid item sm={1} xs={0}></Grid>
+					<Grid item sm={1} xs={false}></Grid>
 					<Grid item sm={4} xs={12}>
 						<Profile />
 					</Grid>
 				</Grid>
-				<Grid container spacing={16}>
+				<Grid container>
 					<Grid item sm={4} xs={12} className={classes.pictures}>
 						<Card className={classes.card}>
 							<CardActionArea>
@@ -134,24 +139,26 @@ export class home extends Component {
 						</Link>
 					</Grid>
 					<Grid item sm={4} xs={12} className={classes.pictures}>
-						<Card className={classes.card}>
-							<CardActionArea>
-								<Typography
-									component='span'
-									variant='subtitle1'
-									color='inherit'
-									className={classes.imageTitle}>
-									View Recent Posts
-								</Typography>
-								<img
-									component='img'
-									alt='Contemplative Reptile'
-									src={image3}
-									title='Contemplative Reptile'
-									className={classes.cardMedia}
-								/>
-							</CardActionArea>
-						</Card>
+						<Link to={'/posts'}>
+							<Card className={classes.card}>
+								<CardActionArea>
+									<Typography
+										component='span'
+										variant='subtitle1'
+										color='inherit'
+										className={classes.imageTitle}>
+										View Recent Posts
+									</Typography>
+									<img
+										component='img'
+										alt='Contemplative Reptile'
+										src={image3}
+										title='Contemplative Reptile'
+										className={classes.cardMedia}
+									/>
+								</CardActionArea>
+							</Card>
+						</Link>
 					</Grid>
 				</Grid>
 			</div>
@@ -160,6 +167,7 @@ export class home extends Component {
 }
 
 home.propTypes = {
+	getPosts: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired
 };
 
@@ -167,4 +175,4 @@ const mapStateToProps = (state) => ({
 	data: state.data
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(home));
+export default connect(mapStateToProps, { getPosts })(withStyles(styles)(home));

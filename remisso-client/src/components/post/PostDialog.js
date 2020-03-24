@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import MyButton from '../../util/MyButton';
 import LikeButton from './LikeButton';
+
 import Comments from './Comments';
 import CommentForm from './CommentForm';
+
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 // MUI Stuff
@@ -18,15 +20,15 @@ import CloseIcon from '@material-ui/icons/Close';
 import UnfoldMore from '@material-ui/icons/UnfoldMore';
 import ChatIcon from '@material-ui/icons/Chat';
 // Redux stuff
-//import { connect } from 'react-redux';
-//import { getPost, clearErrors } from '../../redux/actions/dataActions';
+import { connect } from 'react-redux';
+import { getPost, clearErrors } from '../../redux/actions/dataActions';
+import theme from '../../util/theme';
 
-const styles = (theme) => ({
+const styles = () => ({
 	...theme,
 	profileImage: {
-		maxWidth: 200,
-		height: 200,
-		borderRadius: '50%',
+		height: 400,
+		width: '100%',
 		objectFit: 'cover'
 	},
 	dialogContent: {
@@ -49,9 +51,7 @@ const styles = (theme) => ({
 
 class PostDialog extends Component {
 	state = {
-		open: false,
-		oldPath: '',
-		newPath: ''
+		open: false
 	};
 	componentDidMount() {
 		if (this.props.openDialog) {
@@ -68,7 +68,7 @@ class PostDialog extends Component {
 
 		window.history.pushState(null, null, newPath);
 
-		this.setState({ open: true, oldPath, newPath });
+		this.setState({ open: true });
 		this.props.getPost(this.props.postId);
 	};
 	handleClose = () => {
@@ -84,13 +84,15 @@ class PostDialog extends Component {
 				postId,
 				body,
 				createdAt,
-				likeCount,
 				commentCount,
-				userImage,
-				userHandle,
+				bodyAccount,
+				imgURL,
+				name,
 				comments
 			},
-			UI: { loading }
+			UI: { loading },
+			commentnumber,
+			likenumber
 		} = this.props;
 
 		const dialogMarkup = loading ? (
@@ -98,18 +100,15 @@ class PostDialog extends Component {
 				<CircularProgress size={200} thickness={2} />
 			</div>
 		) : (
-			<Grid container spacing={16}>
-				<Grid item sm={5}>
-					<img src={userImage} alt='Profile' className={classes.profileImage} />
+			<Grid container>
+				<Grid item sm={12}>
+					<img src={imgURL} alt='Profile' className={classes.profileImage} />
 				</Grid>
 				<Grid item sm={7}>
-					<Typography
-						component={Link}
-						color='primary'
-						variant='h5'
-						to={`/users/${userHandle}`}>
-						@{userHandle}
+					<Typography component={Link} color='primary' variant='h2' to=''>
+						{name}
 					</Typography>
+					<Typography>{bodyAccount}</Typography>
 					<hr className={classes.invisibleSeparator} />
 					<Typography variant='body2' color='textSecondary'>
 						{dayjs(createdAt).format('h:mm a, MMMM DD YYYY')}
@@ -117,7 +116,7 @@ class PostDialog extends Component {
 					<hr className={classes.invisibleSeparator} />
 					<Typography variant='body1'>{body}</Typography>
 					<LikeButton postId={postId} />
-					<span>{likeCount} likes</span>
+					<span>{likenumber} Approvals</span>
 					<MyButton tip='comments'>
 						<ChatIcon color='primary' />
 					</MyButton>
@@ -125,11 +124,15 @@ class PostDialog extends Component {
 				</Grid>
 				<hr className={classes.visibleSeparator} />
 				<CommentForm postId={postId} />
-				<Comments comments={comments} />
+				<Comments comments={comments}> </Comments>
 			</Grid>
 		);
 		return (
 			<Fragment>
+				<MyButton tip='comments' onClick={this.handleOpen}>
+					<ChatIcon color='primary' />
+				</MyButton>
+				{commentnumber} comments
 				<MyButton
 					onClick={this.handleOpen}
 					tip='Expand post'
@@ -159,6 +162,7 @@ class PostDialog extends Component {
 PostDialog.propTypes = {
 	clearErrors: PropTypes.func.isRequired,
 	getPost: PropTypes.func.isRequired,
+	likePost: PropTypes.func.isRequired,
 	postId: PropTypes.string.isRequired,
 	userHandle: PropTypes.string.isRequired,
 	post: PropTypes.object.isRequired,
@@ -170,9 +174,11 @@ const mapStateToProps = (state) => ({
 	UI: state.UI
 });
 
-// const mapActionsToProps = {
-// 	getPost,
-// 	clearErrors
-// };
-
-export default withStyles(styles)(PostDialog);
+const mapActionsToProps = {
+	getPost,
+	clearErrors
+};
+export default connect(
+	mapStateToProps,
+	mapActionsToProps
+)(withStyles(styles)(PostDialog));

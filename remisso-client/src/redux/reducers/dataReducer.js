@@ -14,7 +14,6 @@ const initialState = {
 	post: {},
 	loading: false
 };
-let index;
 
 export default function(state = initialState, action, index) {
 	switch (action.type) {
@@ -35,13 +34,23 @@ export default function(state = initialState, action, index) {
 				post: action.payload
 			};
 		case LIKE_POST:
+			index = state.posts.findIndex(
+				(post) => post.postId === action.payload.postId
+			);
+			state.posts[index].likeCount = action.payload.likeCount;
+			if (state.post.postId === action.payload.postId) {
+				state.post.likeCount = action.payload.likeCount;
+			}
+			return {
+				...state
+			};
 		case UNLIKE_POST:
 			index = state.posts.findIndex(
 				(post) => post.postId === action.payload.postId
 			);
 			state.posts[index] = action.payload;
 			if (state.post.postId === action.payload.postId) {
-				state.post = action.payload;
+				state.post.likeCount = action.payload.likeCount;
 			}
 			return {
 				...state
@@ -58,6 +67,12 @@ export default function(state = initialState, action, index) {
 				posts: [action.payload, ...state.posts]
 			};
 		case SUBMIT_COMMENT:
+			index = state.posts.findIndex(
+				(post) => post.postId === action.payload.postId
+			);
+			let x = state.post.commentCount + 1;
+			state.post.commentCount = x;
+			state.posts[index].commentCount++;
 			return {
 				...state,
 				post: {

@@ -1,19 +1,18 @@
 import React, { Component, Fragment } from 'react';
 
-import Link from 'react-router-dom/Link';
-import '../App.css';
+import '../../App.css';
 import PropTypes from 'prop-types';
 
 //redux
 import { connect } from 'react-redux';
-import { logoutUser } from '../redux/actions/userActions';
+import { logoutUser } from '../../redux/actions/userActions';
 
 //MUI
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 
-import Notifications from './Notifications';
+import Notifications from '../Notifications';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -46,6 +45,7 @@ class Navbar extends Component {
 	};
 
 	render() {
+		let Link = require('react-router-dom').Link;
 		const { authenticated } = this.props;
 		const { value } = this.state;
 		return (
@@ -79,7 +79,6 @@ class Navbar extends Component {
 									/>
 									<MyBottomNavigationAction
 										label='Logout'
-										component={Link}
 										onClick={this.handleLogout}
 										value='logout'
 									/>

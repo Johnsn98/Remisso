@@ -6,10 +6,11 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 // Redux stuff
-// import { connect } from 'react-redux';
-// import { submitComment } from '../../redux/actions/dataActions';
+import { connect } from 'react-redux';
+import { submitComment } from '../../redux/actions/dataActions';
+import theme from '../../util/theme';
 
-const styles = (theme) => ({
+const styles = () => ({
 	...theme
 });
 
@@ -82,4 +83,6 @@ const mapStateToProps = (state) => ({
 	authenticated: state.user.authenticated
 });
 
-export default withStyles(styles)(CommentForm);
+export default connect(mapStateToProps, { submitComment })(
+	withStyles(styles)(CommentForm)
+);

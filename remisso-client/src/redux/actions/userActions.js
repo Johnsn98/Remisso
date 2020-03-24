@@ -5,7 +5,9 @@ import {
 	LOADING_UI,
 	SET_UNAUTHENTICATED,
 	LOADING_USER,
-	MARK_NOTIFICATIONS_READ
+	MARK_NOTIFICATIONS_READ,
+	SET_URL,
+	STOP_LOADING_UI
 } from '../types';
 import axios from 'axios';
 
@@ -70,6 +72,20 @@ export const uploadImage = (formData) => (dispatch) => {
 		.post('/user/image', formData)
 		.then(() => {
 			dispatch(getUserData());
+		})
+		.catch((err) => console.log(err));
+};
+
+export const uploadPostImage = (formData) => (dispatch) => {
+	dispatch({ type: LOADING_UI });
+	axios
+		.post('/post/image', formData)
+		.then((res) => {
+			dispatch({
+				type: SET_URL,
+				payload: res.data
+			});
+			dispatch({ type: STOP_LOADING_UI });
 		})
 		.catch((err) => console.log(err));
 };

@@ -262,10 +262,12 @@ exports.getUserDetails = (req, res) => {
 			userData.posts = [];
 			data.forEach((doc) => {
 				userData.posts.push({
-					body: doc.data().body,
+					name: doc.data().name,
+					bodyAccount: doc.data().bodyAccount,
+					bodyResolution: doc.data().bodyResolution,
 					createdAt: doc.data().createdAt,
 					userHandle: doc.data().userHandle,
-					userImage: doc.data().userImage,
+					imgURL: doc.data().imgURL,
 					likeCount: doc.data().likeCount,
 					commentCount: doc.data().commentCount,
 					postId: doc.id
@@ -313,7 +315,7 @@ exports.getAuthenticatedUser = (req, res) => {
 					recipient: doc.data().recipient,
 					sender: doc.data().sender,
 					createdAt: doc.data().createdAt,
-					screamId: doc.data().postId,
+					postId: doc.data().postId,
 					type: doc.data().type,
 					read: doc.data().read,
 					notificationId: doc.id

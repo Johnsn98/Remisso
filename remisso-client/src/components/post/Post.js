@@ -8,7 +8,6 @@ import DeletePost from './DeletePost';
 import PostDialog from './PostDialog';
 import LikeButton from './LikeButton';
 import Grid from '@material-ui/core/Grid';
-import PostPost from './PostPost';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -21,7 +20,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 // Icons
-import ChatIcon from '@material-ui/icons/Chat';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import LinkIcon from '@material-ui/icons/Link';
@@ -105,7 +103,7 @@ class Post extends Component {
 				return (
 					<a className={classes.link} href={facebookLink}>
 						<MyButton tip='View Facebook page'>
-							<FacebookIcon color='primary' />
+							<FacebookIcon />
 						</MyButton>
 						{facebookLink}
 					</a>
@@ -131,7 +129,7 @@ class Post extends Component {
 				return (
 					<a className={classes.link} href={otherLink}>
 						<MyButton tip='View Instagram page'>
-							<LinkIcon color='theme.palette.primary.light' />
+							<LinkIcon color='primary' />
 						</MyButton>{' '}
 						{otherLink}
 					</a>
@@ -159,7 +157,6 @@ class Post extends Component {
 							<CardContent className={classes.content}>
 								<Typography
 									variant='h1'
-									component={Link}
 									color='primary'
 									className={classes.name}>
 									{name}
@@ -173,26 +170,29 @@ class Post extends Component {
 									color='textSecondary'
 									component={Link}
 									to={`/users/${userHandle}`}
-									color='primary'
 									className={classes.user}>
 									Posted by: {userHandle}
+								</Typography>{' '}
+								<Typography className={classes.bold}>
+									Account of what happened:
 								</Typography>
-								<Typography variant='body1'>
-									{' '}
-									<div className={classes.bold}>Account of what happened:</div>
-									<div className={classes.underline}>{bodyAccount}</div>
+								<Typography className={classes.underline}>
+									{bodyAccount}
+								</Typography>{' '}
+								<Typography className={classes.bold}>
+									How can it be resolved:
 								</Typography>
-								<Typography variant='body1'>
-									{' '}
-									<div className={classes.bold}>How can it be resolved:</div>
-									<div className={classes.underline}>{bodyResolution}</div>
+								<Typography className={classes.underline}>
+									{bodyResolution}
 								</Typography>
 								<LikeButton postId={postId} />
 								<span>{likeCount} Approval</span>
-								<MyButton tip='comments'>
-									<ChatIcon color='secondary' />
-								</MyButton>
-								<span>{commentCount} comments</span>
+								<PostDialog
+									postId={postId}
+									userHandle={userHandle}
+									openDialog={this.props.openDialog}
+									commentnumber={commentCount}
+									likenumber={likeCount}></PostDialog>
 							</CardContent>
 						</Grid>
 					</Grid>
