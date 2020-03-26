@@ -10,6 +10,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 // Pages
 import home from './pages/home';
 import posts from './pages/posts';
+import search from './pages/search';
 import login from './pages/login';
 import signup from './pages/signup';
 import createpost from './pages/createPost';
@@ -54,6 +55,7 @@ class App extends Component {
 					<div className='App'>
 						<Router>
 							<Navbar />
+
 							<div className='container'>
 								<Switch>
 									<Route exact path='/' component={home} />
@@ -63,6 +65,7 @@ class App extends Component {
 									<AuthRoute exact path='/login' component={login} />
 									<AuthRoute exact path='/signup' component={signup} />
 									<Route exact path='/createpost' component={createpost} />
+									<Route exact path='/search' component={search} />
 									<Route
 										exact
 										path='/users/:handle/post/:postId'

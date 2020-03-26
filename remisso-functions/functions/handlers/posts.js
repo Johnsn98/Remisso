@@ -3,6 +3,7 @@ const { db } = require('../utilities/admin');
 exports.getAllPosts = (req, res) => {
 	db.collection('Posts')
 		.orderBy('createdAt', 'desc')
+		.limit(50)
 		.get()
 		.then((data) => {
 			let posts = [];
@@ -20,6 +21,8 @@ exports.getAllPosts = (req, res) => {
 					otherLink: doc.data().otherLink,
 					imgURL: doc.data().imgURL,
 					location: doc.data().location,
+					lat: doc.data().lat,
+					lng: doc.data().lng,
 					commentCount: doc.data().commentCount,
 					likeCount: doc.data().likeCount
 				});
@@ -50,11 +53,54 @@ exports.postOnePost = (req, res) => {
 	} else {
 		image = req.body.imgURL;
 	}
+	let splitName = ['', '', '', ''];
+	lowerName = req.body.name.toLowerCase();
+	splitName = lowerName.split(' ');
 
+	if (!splitName[1]) {
+		splitName[1] = '';
+	}
+	if (!splitName[2]) {
+		splitName[2] = '';
+	}
+	let optionA = '';
+	let optionB = '';
+	let optionC = '';
+	let optionD = '';
+	let optionE = '';
+	let optionF = '';
+	let optionG = '';
+	let optionH = '';
+
+	optionA = splitName[0];
+	optionB = splitName[1];
+	optionC = `${splitName[0]} ${splitName[1]}`;
+	optionD = `${splitName[1]} ${splitName[0]}`;
+	optionE = `${splitName[2]}`;
+	optionF = `${splitName[0]} ${splitName[1]} ${splitName[2]}`;
+	optionG = `${splitName[0]} ${splitName[2]}`;
+	optionH = `"${splitName[1]}"`;
+	optionI = `"${splitName[2]}"`;
+
+	let key = [
+		optionA,
+		optionB,
+		optionC,
+		optionD,
+		optionE,
+		optionF,
+		optionG,
+		optionH,
+		optionI
+	];
+	let keywords = req.body.bodyAccount.split(' ');
+	let hypotenuse = Math.hypot(req.body.lat, req.body.lng);
 	newPost = {
 		name: req.body.name,
+		key: key,
+		keywords: keywords,
 		bodyAccount: req.body.bodyAccount,
-		bodyResolution: req.body.bodyAccount,
+		bodyResolution: req.body.bodyResolution,
 		createdAt: new Date().toISOString(),
 		facebookLink: req.body.facebookLink,
 		instagramLink: req.body.instagramLink,
@@ -65,6 +111,7 @@ exports.postOnePost = (req, res) => {
 		lat: req.body.lat,
 		lng: req.body.lng,
 		latlng: [req.body.lat, req.body.lng],
+		hypotenuse: hypotenuse,
 		commentCount: 0,
 		likeCount: 0
 	};
@@ -82,23 +129,72 @@ exports.postOnePost = (req, res) => {
 		});
 };
 
+// search query
 exports.findPost = (req, res) => {
-	name = req.params.postName;
-	if (name === undefined) {
-		name = 'Pinkman';
-	}
-	if (name === 'undefined') {
-		name = 'Pinkman';
-	}
+	name = req.params.postName.toLowerCase();
 	db.collection('Posts')
-		.where('name', '==', name)
+		.where('key', 'array-contains', name)
+		.limit(25)
 		.get()
 		.then((data) => {
-			let searchResults = [];
+			let posts = [];
 			data.forEach((doc) => {
-				searchResults.push(doc.data());
+				posts.push({
+					postId: doc.id,
+					bodyAccount: doc.data().bodyAccount,
+					userHandle: doc.data().userHandle,
+					userImage: doc.data().userImage,
+					createdAt: doc.data().createdAt,
+					name: doc.data().name,
+					bodyResolution: doc.data().bodyResolution,
+					facebookLink: doc.data().facebookLink,
+					instagramLink: doc.data().instagramLink,
+					otherLink: doc.data().otherLink,
+					imgURL: doc.data().imgURL,
+					location: doc.data().location,
+					lat: doc.data().lat,
+					lng: doc.data().lng,
+					commentCount: doc.data().commentCount,
+					likeCount: doc.data().likeCount
+				});
 			});
-			return res.json(searchResults);
+			return res.json(posts);
+		})
+		.catch((err) => console.error(err));
+};
+
+// search query by location
+exports.findPostByLocation = (req, res) => {
+	distance = req.body.distance / 69;
+	hypot = Math.hypot(req.body.lat, req.body.lng);
+	db.collection('Posts')
+		.where('hypotenuse', '>=', hypot - distance)
+		.where('hypotenuse', '<=', hypot + distance)
+		.limit(50)
+		.get()
+		.then((data) => {
+			let posts = [];
+			data.forEach((doc) => {
+				posts.push({
+					postId: doc.id,
+					bodyAccount: doc.data().bodyAccount,
+					userHandle: doc.data().userHandle,
+					userImage: doc.data().userImage,
+					createdAt: doc.data().createdAt,
+					name: doc.data().name,
+					bodyResolution: doc.data().bodyResolution,
+					facebookLink: doc.data().facebookLink,
+					instagramLink: doc.data().instagramLink,
+					otherLink: doc.data().otherLink,
+					imgURL: doc.data().imgURL,
+					location: doc.data().location,
+					lat: doc.data().lat,
+					lng: doc.data().lng,
+					commentCount: doc.data().commentCount,
+					likeCount: doc.data().likeCount
+				});
+			});
+			return res.json(posts);
 		})
 		.catch((err) => console.error(err));
 };

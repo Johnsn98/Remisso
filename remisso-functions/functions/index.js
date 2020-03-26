@@ -7,6 +7,7 @@ const { db } = require('./utilities/admin');
 const {
 	getAllPosts,
 	findPost,
+	findPostByLocation,
 	postOnePost,
 	getPost,
 	commentOnPost,
@@ -37,6 +38,7 @@ app.get('/post/:postId/unlike', FBAuth, unLikePost);
 app.post('/post/:postId/comment', FBAuth, commentOnPost);
 
 app.get('/findpost/:postName', findPost);
+app.post('/searchbylocation', findPostByLocation);
 
 // users routes
 app.post('/signup', signup);

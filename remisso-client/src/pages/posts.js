@@ -48,11 +48,9 @@ class posts extends Component {
 		} = this.props;
 		let createPostMarkup;
 		let recentPostsMarkup = !loading ? (
-			posts.slice(0, this.state.showitems).map(
-				(post) => <Post key={post.postId} post={post} />
-
-				//	posts.map((post) => <Post key={post.postId} post={post}
-			)
+			posts
+				.slice(0, this.state.showitems)
+				.map((post) => <Post key={post.postId} post={post} />)
 		) : (
 			<PostSkeleton />
 		);
@@ -83,7 +81,7 @@ class posts extends Component {
 					</Grid>
 					<Grid item sm={4} xs={12}>
 						<Profile />
-						{markup}
+						<div style={{ textAlign: 'center' }}>{markup}</div>
 					</Grid>
 				</Grid>
 			</div>

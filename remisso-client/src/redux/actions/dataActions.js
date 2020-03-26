@@ -34,6 +34,44 @@ export const getPosts = () => (dispatch) => {
 			});
 		});
 };
+
+export const findPosts = (search) => (dispatch) => {
+	dispatch({ type: LOADING_DATA });
+	axios
+		.get(`/findpost/${search}`)
+		.then((res) => {
+			dispatch({
+				type: SET_POSTS,
+				payload: res.data
+			});
+		})
+		.catch((err) => {
+			dispatch({
+				type: SET_POSTS,
+				payload: []
+			});
+		});
+};
+
+export const findPostByLocation = (searchData) => (dispatch) => {
+	dispatch({ type: LOADING_DATA });
+	axios
+		.post(`/searchbylocation`, searchData)
+		.then((res) => {
+			dispatch({
+				type: SET_POSTS,
+				payload: res.data
+			});
+		})
+		.catch((err) => {
+			dispatch({
+				type: SET_POSTS,
+				payload: []
+			});
+		});
+	console.log(searchData);
+};
+
 export const getPost = (postId) => (dispatch) => {
 	dispatch({ type: LOADING_UI });
 	axios

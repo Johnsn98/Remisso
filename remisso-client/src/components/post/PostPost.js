@@ -46,42 +46,14 @@ const styles = () => ({
 	},
 	textField: {
 		marginTop: 20
+	},
+	centered: {
+		margin: 20,
+		textAlign: 'center'
 	}
 });
 
-/* maps autocomplete
-function initialize() {
-	var input = document.getElementById('searchTextField');
-	var autocomplete = new google.maps.places.Autocomplete(input);
-	google.maps.event.addListener(autocomplete, 'place_changed', function() {
-		var place = autocomplete.getPlace();
-		document.getElementById('searchTextField').value = place.name;
-		var x1 = place.geometry.location.lat();
-		var y1 = place.geometry.location.lng();
-		console.log(x1, y1);
-	});
-
-	setTimeout(initialize, 5000);
-}
-initialize();
-*/
-
 class PostPost extends Component {
-	//image upload
-	handleImageChange = (event) => {
-		this.setState({ URL: '' });
-		const image = event.target.files[0];
-		const formData = new FormData();
-		formData.append('image', image, image.name);
-		this.props.uploadPostImage(formData);
-		this.setState({
-			errors: 'image uploaded'
-		});
-	};
-	handlePicture = (event) => {
-		const fileInput = document.getElementById('imageInputPost');
-		fileInput.click();
-	};
 	state = {
 		open: false,
 		name: '',
@@ -93,55 +65,103 @@ class PostPost extends Component {
 		userImage: '',
 		imgURL: '',
 		location: '',
-		lat: '55',
-		lng: '55',
-		errors: {}
+		lat: '',
+		lng: '',
+		errors: 'no error',
+		picture: false
 	};
+
+	//image upload
+	handleImageChange = (event) => {
+		this.setState({ URL: '' });
+		const image = event.target.files[0];
+		const formData = new FormData();
+		formData.append('image', image, image.name);
+		this.props.uploadPostImage(formData);
+		this.setState({
+			errors: 'image uploaded',
+			picture: true
+		});
+	};
+	handlePicture = (event) => {
+		const fileInput = document.getElementById('imageInputPost');
+		fileInput.click();
+	};
+
 	componentDidMount() {
 		if (this.props.openDialog) {
 			this.handleOpen();
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
+	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (nextProps.UI.errors) {
 			this.setState({
 				errors: nextProps.UI.errors
 			});
 		}
-		if (!nextProps.UI.errors && !nextProps.UI.loading) {
-			this.setState({ body: '', errors: {} });
+		if (nextProps.submit) {
+			this.setState({
+				submit: nextProps.submit
+			});
 		}
-		if (nextProps.user.URL) {
-			this.setState({ imgURL: nextProps.user.URL });
+		if (nextProps.user.URL && this.state.picture) {
+			this.setState({
+				imgURL: nextProps.user.URL
+			});
 		}
-		if (
-			!nextProps.UI.errors &&
-			!nextProps.UI.loading &&
-			this.state.errors != 'image uploaded'
-		) {
-			this.setState({ body: '', open: false, errors: {} });
+		if (!nextProps.UI.errors && !nextProps.UI.loading && this.state.submit) {
+			this.setState({ body: '', errors: {}, open: false });
+			this.handleClose();
 		}
 	}
 	handleOpen = () => {
+		this.setState({
+			open: true,
+			bodyAccount: '',
+			bodyResolution: '',
+			facebookLink: '',
+			instagramLink: '',
+			otherLink: '',
+			userImage: '',
+			imgURL: '',
+			location: '',
+			lat: '',
+			lng: '',
+			errors: {},
+			submit: false,
+			picture: false
+		});
 		let oldPath = window.location.pathname;
 		const newPath = `/posts/createpost`;
 
 		if (oldPath === newPath) oldPath = `/posts`;
 
 		window.history.pushState(null, null, newPath);
-		this.setState({ open: true, imgURL: null });
-		this.setState({
-			errors: 'image uploaded'
-		});
 	};
 	handleClose = () => {
 		this.props.clearErrors();
-		this.setState({ open: false, errors: {}, imgURL: '' });
+		this.setState({
+			open: false,
+			bodyAccount: '',
+			bodyResolution: '',
+			facebookLink: '',
+			instagramLink: '',
+			otherLink: '',
+			userImage: '',
+			imgURL: '',
+			location: '',
+			lat: '',
+			lng: '',
+			errors: {},
+			submit: false
+		});
 		window.history.pushState(null, null, `/posts`);
 	};
 	handleChange = (event) => {
-		this.setState({ [event.target.name]: event.target.value });
+		this.setState({
+			[event.target.name]: event.target.value
+		});
 	};
 	myCallback = (data) => {
 		this.setState({
@@ -149,7 +169,6 @@ class PostPost extends Component {
 			lat: data.lat,
 			lng: data.lng
 		});
-		console.log(this.state);
 	};
 
 	handleSubmit = (event) => {
@@ -166,6 +185,9 @@ class PostPost extends Component {
 			location: this.state.location,
 			lat: this.state.lat,
 			lng: this.state.lng
+		});
+		this.setState({
+			submit: true
 		});
 	};
 	render() {
@@ -297,20 +319,22 @@ class PostPost extends Component {
 								onChange={this.handleChange}
 								fullWidth
 							/>
-							<Button
-								type='submit'
-								variant='contained'
-								color='primary'
-								className={classes.submitButton}
-								disabled={loading}>
-								Submit
-								{loading && (
-									<CircularProgress
-										size={30}
-										className={classes.progressSpinner}
-									/>
-								)}
-							</Button>
+							<div className={classes.centered}>
+								<Button
+									type='submit'
+									variant='contained'
+									color='primary'
+									className={classes.Button}
+									disabled={loading}>
+									Submit
+									{loading && (
+										<CircularProgress
+											size={30}
+											className={classes.progressSpinner}
+										/>
+									)}
+								</Button>
+							</div>
 						</form>
 					</DialogContent>
 				</Dialog>

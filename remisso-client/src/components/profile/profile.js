@@ -67,9 +67,6 @@ class Profile extends Component {
 	handleLogout = () => {
 		this.props.logoutUser();
 	};
-	componentDidMount() {
-		console.log(this.props);
-	}
 
 	render() {
 		const {
@@ -206,8 +203,7 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	user: state.user,
-	history: state.history
+	user: state.user
 });
 
 const mapActionsToProps = { logoutUser, uploadImage };
@@ -216,8 +212,7 @@ Profile.propTypes = {
 	logoutUser: PropTypes.func.isRequired,
 	uploadImage: PropTypes.func.isRequired,
 	user: PropTypes.object.isRequired,
-	classes: PropTypes.object.isRequired,
-	history: PropTypes.object.isRequired
+	classes: PropTypes.object.isRequired
 };
 
 export default connect(

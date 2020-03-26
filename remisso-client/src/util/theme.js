@@ -2,7 +2,7 @@ export default {
 	palette: {
 		primary: {
 			light: '#b22a00', //orange
-			main: '#546E79',
+			main: '#08304b',
 			dark: '#008394',
 			contrastText: '#fff'
 		},
@@ -110,5 +110,8 @@ export default {
 		height: 200,
 		objectFit: 'cover',
 		maxWidth: '100%'
+	},
+	'Wrapper-mapContainer-75': {
+		height: '700'
 	}
 };

@@ -6,9 +6,6 @@ import PlacesAutocomplete, {
 	geocodeByAddress,
 	getLatLng
 } from 'react-places-autocomplete';
-import Grid from '@material-ui/core/Grid';
-import CloseIcon from '@material-ui/icons/Close';
-import MyButton from '../../util/MyButton';
 let suggestion1 = '';
 
 export class autocomplete extends Component {
@@ -21,9 +18,6 @@ export class autocomplete extends Component {
 	};
 
 	handleSelect = (location) => {
-		if (!location) {
-			location = suggestion1;
-		}
 		geocodeByAddress(location)
 			.then((results) => getLatLng(results[0]))
 			.then((results) => {
@@ -44,6 +38,8 @@ export class autocomplete extends Component {
 	handleClickAway = () => {
 		if (!this.state.location) {
 			this.handleSelect(suggestion1);
+		} else {
+			this.handleSelect();
 		}
 	};
 
@@ -54,7 +50,8 @@ export class autocomplete extends Component {
 					<PlacesAutocomplete
 						value={this.state.location}
 						onChange={this.handleChange}
-						onSelect={this.handleSelect}>
+						onSelect={this.handleSelect}
+						highlightFirstSuggestion>
 						{({
 							getInputProps,
 							suggestions,
@@ -69,9 +66,8 @@ export class autocomplete extends Component {
 										label='Location'
 										multiline
 										rows='2'
-										placeholder='Where did this happen?'
+										placeholder='Enter a location'
 										fullWidth
-										value={this.state.location}
 										{...getInputProps({})}>
 										{' '}
 									</TextField>

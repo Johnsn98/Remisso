@@ -53,7 +53,7 @@ const styles = () => ({
 const PostSkeleton = (props) => {
 	const { classes } = props;
 
-	const content = Array.from({ length: 5 }).map((item, index) => (
+	const content = Array.from({ length: 3 }).map((item, index) => (
 		<Card className={classes.card} key={index}>
 			<CardMedia className={classes.cover}>
 				<CircularProgress size={100} className={classes.progress} />
