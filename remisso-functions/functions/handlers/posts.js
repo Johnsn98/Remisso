@@ -49,7 +49,7 @@ exports.postOnePost = (req, res) => {
 	}
 	if (req.body.imgURL === null || req.body.imgURL === '') {
 		image =
-			'https://firebasestorage.googleapis.com/v0/b/remisso-website.appspot.com/o/logo.jpg?alt=media&token=c5136266-c8a2-4516-8c1d-96d5ec9e22ae';
+			'https://firebasestorage.googleapis.com/v0/b/remisso-website.appspot.com/o/default.png?alt=media&token=63324f4c-4891-4527-8c5b-e79b25f23184';
 	} else {
 		image = req.body.imgURL;
 	}

@@ -131,7 +131,7 @@ export class home extends Component {
 	}
 
 	onMarkerClick = (post) => {
-		this.props.history.push(`/users/usewr/post/${post.postId}`);
+		this.props.history.push(`/users/${post.userHandle}/post/${post.postId}`);
 	};
 
 	render() {
@@ -142,33 +142,36 @@ export class home extends Component {
 			width: '100%',
 			height: 900
 		};
-
-		let Markers = !loading ? (
-			posts.map((post) => (
+		let Markers;
+		if (posts) {
+			Markers = !loading ? (
+				posts.map((post) => (
+					<Marker
+						name={'Current location'}
+						className={classes.marker}
+						label={{
+							text: post.name,
+							fontSize: '1rem',
+							color: 'white'
+						}}
+						labelOrigin={[0, 0]}
+						position={{ lat: post.lat, lng: post.lng }}
+						onClick={() => this.onMarkerClick(post)}
+						icon={Icon}
+						key={post.postId}></Marker>
+				))
+			) : (
 				<Marker
-					name={'Current location'}
-					className={classes.marker}
+					icon={loadingIcon}
 					label={{
-						text: post.name,
+						text: 'LOADING',
 						fontSize: '1rem',
 						color: 'white'
 					}}
-					labelOrigin={[0, 0]}
-					position={{ lat: post.lat, lng: post.lng }}
-					onClick={() => this.onMarkerClick(post)}
-					icon={Icon}></Marker>
-			))
-		) : (
-			<Marker
-				icon={loadingIcon}
-				label={{
-					text: 'LOADING',
-					fontSize: '1rem',
-					color: 'white'
-				}}
-				position={{ lat: 19, lng: -99 }}
-			/>
-		);
+					position={{ lat: 19, lng: -99 }}
+				/>
+			);
+		}
 
 		return (
 			<div>

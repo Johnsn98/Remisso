@@ -14,7 +14,7 @@ export class autocomplete extends Component {
 		this.state = { location: '' };
 	}
 	handleChange = (location) => {
-		this.setState({ location });
+		this.setState({ location: location });
 	};
 
 	handleSelect = (location) => {

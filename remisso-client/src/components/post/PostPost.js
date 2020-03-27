@@ -225,7 +225,10 @@ class PostPost extends Component {
 					/>
 
 					{!loading ? (
-						<img src={this.state.imgURL} className={classes.image}></img>
+						<img
+							src={this.state.imgURL}
+							className={classes.image}
+							alt={''}></img>
 					) : (
 						<div className={classes.image}></div>
 					)}

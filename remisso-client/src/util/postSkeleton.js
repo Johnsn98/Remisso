@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import NoImg from '../icons/logo.png';
 import PropTypes from 'prop-types';
 // MUI
 import Card from '@material-ui/core/Card';

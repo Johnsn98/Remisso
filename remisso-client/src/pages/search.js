@@ -135,6 +135,10 @@ export class search extends Component {
 		});
 	};
 
+	onMarkerClick = (post) => {
+		this.props.history.push(`/users/${post.userHandle}/post/${post.postId}`);
+	};
+
 	handleChange = (event) => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -183,7 +187,7 @@ export class search extends Component {
 			<PostSkeleton />
 		);
 		let searchBar;
-		if (this.state.searchType == 'name') {
+		if (this.state.searchType === 'name') {
 			searchBar = (
 				<form noValidate onSubmit={this.handleSubmit} className={classes.form}>
 					<TextField
@@ -219,7 +223,7 @@ export class search extends Component {
 				</form>
 			);
 		}
-		if (this.state.searchType == 'location') {
+		if (this.state.searchType === 'location') {
 			searchBar = (
 				<div>
 					<div className={classes.autocomplete}>
